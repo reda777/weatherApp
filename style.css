@@ -1,3 +1,23 @@
 body{
     background-color: black;
 }
+div.searchMenu{
+    background-color: white;
+    width: 200px;
+    height: calc(25px * 3);
+    display: flex;
+    flex-direction: column;
+}
+div.searchHidden{
+    visibility: hidden;
+}
+div.searchR{
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    height: 25px;
+    user-select: none;
+}
+div.searchR:hover{
+    cursor: pointer;
+}
