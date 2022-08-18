@@ -1,10 +1,10 @@
-async function getWeatherFromAPI(){
-    const response= await fetch("https://api.openweathermap.org/data/2.5/weather?lat=33.9911&lon=-6.8401&units=metric&appid=1825054a3f2ae5db2186b167318fb06c");
+async function getWeatherFromAPI(lat,lon){
+    const response= await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=1825054a3f2ae5db2186b167318fb06c`);
     const weatherObj= await response.json();
     return weatherObj;
 }
-async function cleanData(){
-    const apiData= await getWeatherFromAPI();
+async function cleanData(lat,lon){
+    const apiData= await getWeatherFromAPI(lat,lon);
     /**
      * main temp
      * clouds description
@@ -29,13 +29,13 @@ async function cleanData(){
     //visibility wind speed
     cleanWObj.visibility=apiData.visibility*0.001;
     cleanWObj.wind=apiData.wind.speed*(18/5);
-    console.log(cleanWObj);
+    return cleanWObj;
 }
-/**
- * type
- * search
- * consloe log
- */
+async function getIp(){
+    const response= await fetch(`https://json.geoiplookup.io/`);
+    const locationObj= await response.json();
+    return locationObj;
+}
 async function getLocationFormAPI(loc){
     const response= await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${loc}&limit=3&appid=1825054a3f2ae5db2186b167318fb06c`);
     const locationObj= await response.json();
@@ -43,16 +43,25 @@ async function getLocationFormAPI(loc){
 }
 async function showLocation(loc){
     let apiData,
-        apiString;
+        apiString,
+        searchElem;
     if(loc!=""){
         apiData=await getLocationFormAPI(loc);
         clearResults();
         apiData.forEach(elem => {
             apiString=elem.name+","+elem.country;
-            searchResultsDOM(apiString,elem.lat,elem.lon);
-            console.log(elem);
+            searchElem=searchResultsDOM(apiString,elem.lat,elem.lon);
+            searchResultsEvent(searchElem);
         });
     } 
+}
+function searchResultsEvent(elem){
+    const lat=elem.dataset.lat;
+    const lon=elem.dataset.lon;
+    console.log(lat,lon);
+    elem.addEventListener("click",()=>{
+        cleanData(lat,lon);
+    });
 }
 function clearResults(){
     const searchMenu=document.querySelectorAll(".searchMenu div");
@@ -68,6 +77,7 @@ function searchResultsDOM(tContent,lat,lon){
     results.dataset.lon=lon;
     results.textContent=tContent;
     searchMenu.appendChild(results);
+    return results;
 }
 function events(){
     //show search results from api
@@ -92,6 +102,16 @@ function events(){
             searchMenu.classList.add("searchHidden");
         }
     });
-};
-events();
-/*cleanData();*/
+}
+/*(async function main(){
+    //create events
+    events();
+    //get weather of current location from ip
+    const currentLoc=await getIp();
+    const currentWeather=await cleanData(currentLoc.latitude,currentLoc.longitude);
+    
+    console.log(currentLoc);
+    console.log(currentWeather);
+
+
+})();*/

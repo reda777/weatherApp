@@ -1,23 +1,41 @@
-body{
-    background-color: black;
+body {
+    background-color: rgb(121, 75, 75);
 }
-div.searchMenu{
-    background-color: white;
+
+input {
+    border: 2px solid whitesmoke;
+    border-radius: 6px;
+    background-color: transparent;
+    color: white;
+    height: 20px;
+    padding: 2px 5px;
+    box-sizing: content-box;
+}
+
+input:focus {
+    outline: none !important;
+}
+
+div.searchMenu {
+    background-color: grey;
     width: 200px;
     height: calc(25px * 3);
     display: flex;
     flex-direction: column;
 }
-div.searchHidden{
+
+div.searchHidden {
     visibility: hidden;
 }
-div.searchR{
+
+div.searchR {
     display: flex;
     align-items: center;
     padding: 0 5px;
     height: 25px;
     user-select: none;
 }
-div.searchR:hover{
+
+div.searchR:hover {
     cursor: pointer;
 }
