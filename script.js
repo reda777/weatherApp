@@ -14,7 +14,7 @@ async function cleanData(lat,lon){
      * visibility
      * wind
      */
-    let cleanWObj={main:{},cloud:{}};
+    let cleanWObj={main:{},cloud:{},location:{}};
     //main
     cleanWObj.main.temp=apiData.main.temp;
     cleanWObj.main.feels_like=apiData.main.feels_like;
@@ -29,6 +29,9 @@ async function cleanData(lat,lon){
     //visibility wind speed
     cleanWObj.visibility=apiData.visibility*0.001;
     cleanWObj.wind=apiData.wind.speed*(18/5);
+    //location
+    cleanWObj.location.name=apiData.name;
+    cleanWObj.location.country=apiData.sys.country;
     return cleanWObj;
 }
 async function getIp(){
@@ -103,15 +106,36 @@ function events(){
         }
     });
 }
-/*(async function main(){
+function fillSiteWithData(weatherObj){
+    const img=document.querySelector(".weatherIcon img");
+    const temp=document.querySelector(".temp");
+    const city=document.querySelector(".city");
+    const con=document.querySelector(".weatherCon");
+    const hum=document.querySelector(".humidity");
+    const feelsLike=document.querySelector(".feelsLike");
+    const press=document.querySelector(".pressure");
+    const wind=document.querySelector(".wind");
+    const visi=document.querySelector(".visibility");
+    const lowHigh=document.querySelector(".lowHigh");
+
+    img.src=`icons/${weatherObj.cloud.icon}.svg`;
+    temp.textContent=`${weatherObj.main.temp}°C`;
+    city.textContent=`${weatherObj.location.name}, ${weatherObj.location.country}`;
+    con.textContent=`${weatherObj.cloud.desc}`;
+    hum.textContent=`${weatherObj.humidity}%`;
+    feelsLike.textContent=`${weatherObj.main.feels_like}`;
+    press.textContent=`${weatherObj.pressure} hPa`;
+    wind.textContent=`${weatherObj.wind} km/h`;
+    visi.textContent=`${weatherObj.visibility} km`;
+    lowHigh.textContent=`${weatherObj.main.temp_min}/${weatherObj.main.temp_max}°C`;
+}
+(async function main(){
     //create events
     events();
     //get weather of current location from ip
     const currentLoc=await getIp();
     const currentWeather=await cleanData(currentLoc.latitude,currentLoc.longitude);
-    
-    console.log(currentLoc);
-    console.log(currentWeather);
+    fillSiteWithData(currentWeather);
 
 
-})();*/
+})();

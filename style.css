@@ -1,13 +1,51 @@
 body {
     background-color: rgb(121, 75, 75);
+    margin: 0;
+    padding: 5px;
+    display: flex;
 }
-
+div.main{
+    flex: 3;
+    background-color: rgb(48, 48, 114);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+div.top{
+    display: flex;
+}
+div.top.weatherIcon{
+    width: 150px; 
+    height: 150px;
+}
+div.bottom{
+    display: flex;
+    flex-direction: column;
+}
+div.firstRow{
+    display: flex;
+}
+div.secondRow{
+    display: flex;
+}
+div.thirdRow{
+    display: flex;
+}
+div.searchBar{
+    flex: 1;
+    background-color: rgb(0, 102, 14);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 input {
     border: 2px solid whitesmoke;
     border-radius: 6px;
     background-color: transparent;
     color: white;
     height: 20px;
+    width: calc(200px - 14px);
     padding: 2px 5px;
     box-sizing: content-box;
 }
