@@ -28,7 +28,7 @@ async function cleanData(lat,lon){
     cleanWObj.pressure=apiData.main.pressure;
     //visibility wind speed
     cleanWObj.visibility=apiData.visibility*0.001;
-    cleanWObj.wind=apiData.wind.speed*(18/5);
+    cleanWObj.wind=Math.round(apiData.wind.speed*(18/5));
     //location
     cleanWObj.location.name=apiData.name;
     cleanWObj.location.country=apiData.sys.country;
@@ -80,7 +80,14 @@ function searchResultsDOM(tContent,lat,lon){
     results.dataset.lon=lon;
     results.textContent=tContent;
     searchMenu.appendChild(results);
+    appendClickEvent(results);
     return results;
+}
+function appendClickEvent(elem){
+    elem.addEventListener("click", async ()=>{
+        const currentWeather=await cleanData(elem.dataset.lat,elem.dataset.lon);
+        fillSiteWithData(currentWeather);
+    });
 }
 function events(){
     //show search results from api
@@ -107,7 +114,10 @@ function events(){
     });
 }
 function fillSiteWithData(weatherObj){
+    const weahterIcon=document.querySelector(".weatherIcon img");
     const img=document.querySelector(".weatherIcon img");
+    img.setAttribute("width","150px");
+    img.setAttribute("height","150px");
     const temp=document.querySelector(".temp");
     const city=document.querySelector(".city");
     const con=document.querySelector(".weatherCon");
@@ -122,12 +132,12 @@ function fillSiteWithData(weatherObj){
     temp.textContent=`${weatherObj.main.temp}°C`;
     city.textContent=`${weatherObj.location.name}, ${weatherObj.location.country}`;
     con.textContent=`${weatherObj.cloud.desc}`;
-    hum.textContent=`${weatherObj.humidity}%`;
-    feelsLike.textContent=`${weatherObj.main.feels_like}`;
-    press.textContent=`${weatherObj.pressure} hPa`;
-    wind.textContent=`${weatherObj.wind} km/h`;
-    visi.textContent=`${weatherObj.visibility} km`;
-    lowHigh.textContent=`${weatherObj.main.temp_min}/${weatherObj.main.temp_max}°C`;
+    hum.textContent=`Humidity: ${weatherObj.humidity}%`;
+    feelsLike.textContent=`Feels Like: ${weatherObj.main.feels_like}°C`;
+    press.textContent=`Pressure: ${weatherObj.pressure} hPa`;
+    wind.textContent=`Wind: ${weatherObj.wind} km/h`;
+    visi.textContent=`Visibility: ${weatherObj.visibility} km`;
+    lowHigh.textContent=`High/Low: ${weatherObj.main.temp_max}°/${weatherObj.main.temp_min}°`;
 }
 (async function main(){
     //create events
