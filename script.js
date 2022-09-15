@@ -114,7 +114,7 @@ function events(){
     });
 }
 function fillSiteWithData(weatherObj){
-    const weahterIcon=document.querySelector(".weatherIcon img");
+    document.body.setAttribute("style",`background-image: url(images/${weatherObj.cloud.icon}.jpg)`)
     const img=document.querySelector(".weatherIcon img");
     img.setAttribute("width","150px");
     img.setAttribute("height","150px");
