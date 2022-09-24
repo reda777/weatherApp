@@ -31,7 +31,7 @@ async function getIp(){
     return locationObj;
 }
 async function getLocationFormAPI(loc){
-    const response= await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${loc}&limit=3&appid=1825054a3f2ae5db2186b167318fb06c`);
+    const response= await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${loc}&limit=3&appid=1825054a3f2ae5db2186b167318fb06c`);
     const locationObj= await response.json();
     return locationObj;
 }
