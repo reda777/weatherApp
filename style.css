@@ -17,19 +17,24 @@ body {
     display: flex;
     background-size: cover;
 }
+
 div.main{
+    color: aliceblue;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     flex: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
     justify-content: center;
+    
 }
 /*top*/
 div.top{
     display: flex;
     justify-content: flex-start;
     min-width: 600px;
+    
 }
 div.weatherIcon{
     width: 150px; 
@@ -41,6 +46,7 @@ div.temp{
     font-size: 42px;
     font-family: Cairo;
     align-items: center;
+    
 }
 div.weatherDesc{
     margin: 8px;
@@ -56,7 +62,23 @@ div.bottom{
     grid-template-rows: repeat(3, auto);
     font-size: 24px;
 }
-
+div.rightBar{
+    display: flex;
+    align-items: flex-start;
+}
+div.temperature{
+    display: flex;
+    cursor: pointer;
+    color: aliceblue;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+div.temperature span{
+    width: 30px;
+    height: 30px ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 div.bottom div{
     display: flex;
     margin: 8px;
@@ -64,16 +86,17 @@ div.bottom div{
 }
 
 div.searchBar{
-    flex: 1;
-    display: flex;
     flex-direction: column;
+    display: flex;
     align-items: center;
+    margin: 4px;
 }
 input {
     border: 2px solid whitesmoke;
     border-radius: 6px;
     background-color: transparent;
-    color: white;
+    color: aliceblue;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     height: 20px;
     width: calc(200px - 14px);
     padding: 2px 5px;

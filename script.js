@@ -5,15 +5,6 @@ async function getWeatherFromAPI(lat,lon){
 }
 async function cleanData(lat,lon){
     const apiData= await getWeatherFromAPI(lat,lon);
-    /**
-     * main temp
-     * clouds description
-     * high/low
-     * Humidity
-     * pressure
-     * visibility
-     * wind
-     */
     let cleanWObj={main:{},cloud:{},location:{}};
     //main
     cleanWObj.main.temp=apiData.main.temp;
@@ -112,8 +103,80 @@ function events(){
             searchMenu.classList.add("searchHidden");
         }
     });
+    //change temperature
+    const temp=document.querySelector(".temperature");
+    let userTemp = localStorage.getItem("temp");
+    temp.addEventListener("click",(e)=>{
+        if(e.target.className=="c"){
+            userTemp=0;
+            temp.firstChild.setAttribute("style","color: #81a4c2;");
+            temp.lastChild.setAttribute("style","color: aliceblue");
+            localStorage.setItem("temp", JSON.stringify(userTemp));
+            changeTemperatureText();
+        }else if(e.target.className=="f"){
+            userTemp=1;
+            temp.lastChild.setAttribute("style","color: #81a4c2;");
+            temp.firstChild.setAttribute("style","color: aliceblue");
+            localStorage.setItem("temp", JSON.stringify(userTemp));
+            changeTemperatureText();
+        }
+    });
+}
+function changeTemperatureText(){
+    //select temp doms
+    const temp=document.querySelector(".temp");
+    const feelsLike=document.querySelector(".feelsLike");
+    const lowHigh=document.querySelector(".lowHigh");
+    //change temp based on user preference 
+    const userTemp=localStorage.getItem("temp");
+    let tempScale,mainTemp,tempMax,tempMin,tempFeelLike;
+    if(userTemp==0){
+        tempScale="°C";
+        mainTemp=toCel(temp.dataset.temp);
+        tempMax=toCel(lowHigh.dataset.tempMax);
+        tempMin=toCel(lowHigh.dataset.tempMin);
+        tempFeelLike=toCel(feelsLike.dataset.feelsLike);
+    }else if(userTemp==1){
+        tempScale="°F";
+        mainTemp=toFah(temp.dataset.temp);
+        tempMax=toFah(lowHigh.dataset.tempMax);
+        tempMin=toFah(lowHigh.dataset.tempMin);
+        tempFeelLike=toFah(feelsLike.dataset.feelsLike);
+    }
+    //apply changes
+    temp.textContent=`${mainTemp+tempScale}`;
+    temp.dataset.temp=`${mainTemp}`;
+
+    feelsLike.textContent=`Feels Like: ${tempFeelLike+tempScale}`;
+    feelsLike.dataset.feelsLike=`${tempFeelLike}`;
+
+    lowHigh.textContent=`High/Low: ${tempMax}°/${tempMin}°`;
+    lowHigh.dataset.tempMax=`${tempMax}`;
+    lowHigh.dataset.tempMin=`${tempMin}`;
+
+}
+function toCel(temp){
+    return Math.round((temp - 32) * 5/9);
+}
+function toFah(temp){
+    return Math.round(temp * (9/5) + 32);
 }
 function fillSiteWithData(weatherObj){
+    const userTemp=localStorage.getItem("temp");
+    let tempScale,mainTemp,tempMax,tempMin,tempFeelLike;
+    if(userTemp==0){
+        tempScale="°C";
+        mainTemp=Math.round(weatherObj.main.temp);
+        tempMax=Math.round(weatherObj.main.temp_max);
+        tempMin=Math.round(weatherObj.main.temp_min);
+        tempFeelLike=Math.round(weatherObj.main.feels_like);
+    }else if(userTemp==1){
+        tempScale="°F";
+        mainTemp=toFah(weatherObj.main.temp);
+        tempMax=toFah(weatherObj.main.temp_max);
+        tempMin=toFah(weatherObj.main.temp_min);
+        tempFeelLike=toFah(weatherObj.main.feels_like);
+    }
     document.body.setAttribute("style",`background-image: url(images/${weatherObj.cloud.icon}.jpg)`)
     const img=document.querySelector(".weatherIcon img");
     img.setAttribute("width","150px");
@@ -129,23 +192,50 @@ function fillSiteWithData(weatherObj){
     const lowHigh=document.querySelector(".lowHigh");
 
     img.src=`icons/${weatherObj.cloud.icon}.svg`;
-    temp.textContent=`${weatherObj.main.temp}°C`;
+    temp.textContent=`${mainTemp+tempScale}`;
+    temp.dataset.temp=`${mainTemp}`;
+
     city.textContent=`${weatherObj.location.name}, ${weatherObj.location.country}`;
     con.textContent=`${weatherObj.cloud.desc}`;
     hum.textContent=`Humidity: ${weatherObj.humidity}%`;
-    feelsLike.textContent=`Feels Like: ${weatherObj.main.feels_like}°C`;
+    feelsLike.textContent=`Feels Like: ${tempFeelLike+tempScale}`;
+    feelsLike.dataset.feelsLike=`${tempFeelLike}`;
     press.textContent=`Pressure: ${weatherObj.pressure} hPa`;
     wind.textContent=`Wind: ${weatherObj.wind} km/h`;
     visi.textContent=`Visibility: ${weatherObj.visibility} km`;
-    lowHigh.textContent=`High/Low: ${weatherObj.main.temp_max}°/${weatherObj.main.temp_min}°`;
+    lowHigh.textContent=`High/Low: ${tempMax}°/${tempMin}°`;
+    lowHigh.dataset.tempMax=`${tempMax}`;
+    lowHigh.dataset.tempMin=`${tempMin}`;
+}
+function createLocalStorage() {
+    let check = localStorage.getItem("temp");
+    if (check === null) {
+        //default 0 is °C & 1 is °F
+        let temp=0;
+        localStorage.setItem("temp", JSON.stringify(temp));
+    }
+}
+function selectTemp(){
+    let temp = localStorage.getItem("temp");
+    const tempDiv=document.querySelector(".temperature");
+    if(temp==0){
+        tempDiv.firstChild.setAttribute("style","color: #81a4c2;");
+        tempDiv.lastChild.setAttribute("style","color: aliceblue");
+    }else if(temp==1){
+        tempDiv.lastChild.setAttribute("style","color: #81a4c2;");
+        tempDiv.firstChild.setAttribute("style","color: aliceblue");
+    }
 }
 (async function main(){
     //create events
+    createLocalStorage();
+    selectTemp();
     events();
     //get weather of current location from ip
     const currentLoc=await getIp();
     const currentWeather=await cleanData(currentLoc.latitude,currentLoc.longitude);
     fillSiteWithData(currentWeather);
+
 
 
 })();
